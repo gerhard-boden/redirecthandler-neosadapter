@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		
+	<title>Login to Neos Demo Site</title>
+	
+		<link rel="stylesheet" href="http://test.master/_Resources/Static/Packages/TYPO3.Neos/Styles/Login.css" />
+	
+	
+		<style type="text/css">
+			.neos-login-box:before {
+				background-image: url(http://test.master/_Resources/Static/Packages/TYPO3.Neos/Images/Login/Wallpaper22.jpg);
+			}
+		</style>
+	
+	<script src="http://test.master/_Resources/Static/Packages/TYPO3.Neos/Library/jquery/jquery-2.0.3.js"></script>
+	<script src="http://test.master/_Resources/Static/Packages/TYPO3.Neos/Library/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+
+	</head>
+	
+	
+			<body class="neos" style="background-image:url(http://test.master/_Resources/Static/Packages/TYPO3.Neos/Images/Login/Wallpaper22.jpg);">
+		
+		<div class="neos-modal-centered">
+			<main class="neos-login-main">
+				<div class="neos-login-box background-image-active">
+					<figure class="neos-login-box-logo">
+						<img class="neos-login-box-logo-resource" src="http://test.master/_Resources/Static/Packages/TYPO3.Neos/Images/Login/Logo.svg" width="200px" height="200px" />
+					</figure>
+
+					<header>
+						Login to
+						<strong>Neos Demo Site</strong>
+					</header>
+					<div class="neos-login-body neos">
+						<form name="login" action="/neos/login" method="post">
+<div style="display: none">
+<input type="hidden" name="__referrer[@package]" value="TYPO3.Neos" />
+<input type="hidden" name="__referrer[@subpackage]" value="" />
+<input type="hidden" name="__referrer[@controller]" value="Login" />
+<input type="hidden" name="__referrer[@action]" value="index" />
+<input type="hidden" name="__referrer[arguments]" value="YToxOntzOjg6InVzZXJuYW1lIjtzOjY6Imdib2RlbiI7fQ==8ca6bf528d1074bc96a7d15b769fb5c8465b76ad" />
+<input type="hidden" name="__trustedProperties" value="a:3:{s:15:&quot;lastVisitedNode&quot;;i:1;s:16:&quot;__authentication&quot;;a:1:{s:5:&quot;TYPO3&quot;;a:1:{s:4:&quot;Flow&quot;;a:1:{s:8:&quot;Security&quot;;a:1:{s:14:&quot;Authentication&quot;;a:1:{s:5:&quot;Token&quot;;a:1:{s:16:&quot;UsernamePassword&quot;;a:2:{s:8:&quot;username&quot;;i:1;s:8:&quot;password&quot;;i:1;}}}}}}}i:0;i:1;}a05141908db64e58cccc4194829c83be33af0bed" />
+
+</div>
+
+							<input type="hidden" name="lastVisitedNode" value="" />
+							<fieldset>
+								
+										<div class="neos-controls">
+											<input placeholder="Username" class="neos-span12" id="username" type="text" name="__authentication[TYPO3][Flow][Security][Authentication][Token][UsernamePassword][username]" value="gboden" required="required" />
+										</div>
+										<div class="neos-controls">
+											<input autofocus="autofocus" placeholder="Password" class="neos-span12" id="password" type="password" name="__authentication[TYPO3][Flow][Security][Authentication][Token][UsernamePassword][password]" required="required" />
+										</div>
+									
+								<div class="neos-actions">
+									<!-- Forgot password link will be here -->
+									<button class="neos-span5 neos-pull-right neos-button neos-login-btn" type="submit" name="" value="">
+										Login
+									</button>
+									<button class="neos-span5 neos-pull-right neos-button neos-login-btn neos-disabled neos-hidden">
+										Authenticating
+										<span class="neos-ellipsis"></span>
+									</button>
+									
+										
+											
+											
+											
+											
+												<script>
+													$(function () {
+														$('fieldset').effect('shake', {times: 1}, 60);
+													});
+												</script>
+												<div class="neos-tooltip neos-bottom neos-in neos-tooltip-error">
+											
+											<div class="neos-tooltip-arrow"></div>
+											<div class="neos-tooltip-inner">The entered username or password was wrong
+											</div>
+										
+									
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</main>
+			<footer class="neos-login-footer">
+				<p>
+					<a href="http://neos.io" target="_blank">Neos</a> –
+					© 2006-2016 This is free software, licensed under GPL3 or higher, and you are welcome to redistribute it under certain conditions;
+					Neos comes with ABSOLUTELY NO WARRANTY;
+					See <a href="http://neos.io" target="_blank">neos.io</a> for more details. Obstructing the appearance of this notice is prohibited by law.
+				</p>
+			</footer>
+		</div>
+
+		<script src="http://test.master/_Resources/Static/Packages/TYPO3.Twitter.Bootstrap/2/js/bootstrap.min.js"></script>
+		<script>
+			if ($('#username').val()) {
+				$('#password').focus();
+			}
+			$('form').on('submit', function() {
+				$('.neos-login-btn').toggleClass('neos-hidden');
+			});
+			try {
+				$('form[name="login"] input[name="lastVisitedNode"]').val(sessionStorage.getItem('TYPO3.Neos.lastVisitedNode'));
+			} catch(e) {}
+		</script>
+	</body>
+
+</html>
