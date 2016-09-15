@@ -21,6 +21,7 @@ namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
  *
  */
 
+use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
 use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
 use PHPUnit_Framework_Assert as Assert;
 use Neos\RedirectHandler\NeosAdapter\Service\NodeRedirectService;
@@ -34,8 +35,18 @@ trait RedirectOperationTrait
      */
     public function iHaveTheFollowingRedirects($table)
     {
-        print_r($table);
-        //todo create recirects with data from table
+        $rows = $table->getHash();
+        $nodeRedirectStorage= new RedirectStorage();
+
+        foreach ($rows as $row) {
+            $nodeRedirectStorage->addRedirect(
+                $this->buildActualUriPath($row['sourceuripath']),
+                $this->buildActualUriPath($row['targeturipath'])
+            );
+        }
+
+        $redirectRepository = new RedirectRepository();
+        $redirectRepository->persistEntities();
     }
 
     /**
