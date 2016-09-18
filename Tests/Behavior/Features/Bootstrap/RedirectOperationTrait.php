@@ -17,7 +17,8 @@ namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
  * [x] Find a way to solve the issue that sourceURis look like `localPathToBehat/en/actualUri/`
  * [x] Retrieve persisted redirect within the same request (var_dump was empty because it's a Generator)
  * [x] Find out why i can't change a property without a `The target URI path of the node could not be resolved` exception
- * [ ] Find out why a redirect in the german content dimension hast /en/ as source
+ * [x] Find out why a redirect in the german content dimension hast /en/ as source
+ * [x] Find out why hidden nodes are not retrieved
  * [ ] Write more tests
  *
  */
@@ -57,7 +58,6 @@ trait RedirectOperationTrait
         }
 
         $redirectRepository->persistEntities();
-        $this->resetRedirectInstances();
     }
 
     /**
@@ -70,8 +70,7 @@ trait RedirectOperationTrait
         $workspace = $context->getWorkspace();
         $redirectNode = $context->getNode($path);
         $redirectService = $this->objectManager->get(NodeRedirectService::class);
-//        \TYPO3\Flow\var_dump($workspace);
-//        die();
+
         $redirectService->createRedirectsForPublishedNode($redirectNode, $workspace);
     }
 
