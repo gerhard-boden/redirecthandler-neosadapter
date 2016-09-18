@@ -16,19 +16,29 @@ namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
  *
  * [x] Find a way to solve the issue that sourceURis look like `localPathToBehat/en/actualUri/`
  * [x] Retrieve persisted redirect within the same request (var_dump was empty because it's a Generator)
- * [ ] Find out why i can't change a property without a `The target URI path of the node could not be resolved` exception
+ * [x] Find out why i can't change a property without a `The target URI path of the node could not be resolved` exception
+ * [ ] Find out why a redirect in the german content dimension hast /en/ as source
  * [ ] Write more tests
  *
  */
 
-use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
-use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
 use PHPUnit_Framework_Assert as Assert;
-use Neos\RedirectHandler\NeosAdapter\Service\NodeRedirectService;
 use TYPO3\Flow\Http\Request;
+use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
+use Neos\RedirectHandler\NeosAdapter\Service\NodeRedirectService;
+use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
 
 trait RedirectOperationTrait
 {
+    /**
+     * @BeforeScenario @fixtures
+     * @return void
+     */
+    public function beforeRedirectScenarioDispatcher()
+    {
+        $this->resetRedirectInstances();
+    }
+
     /**
      * @Given /^I have the following redirects:$/
      * @When /^I create the following redirects:$/
@@ -36,7 +46,8 @@ trait RedirectOperationTrait
     public function iHaveTheFollowingRedirects($table)
     {
         $rows = $table->getHash();
-        $nodeRedirectStorage= new RedirectStorage();
+        $nodeRedirectStorage = $this->objectManager->get(RedirectStorage::class);
+        $redirectRepository = $this->objectManager->get(RedirectRepository::class);
 
         foreach ($rows as $row) {
             $nodeRedirectStorage->addRedirect(
@@ -45,8 +56,8 @@ trait RedirectOperationTrait
             );
         }
 
-        $redirectRepository = new RedirectRepository();
         $redirectRepository->persistEntities();
+        $this->resetRedirectInstances();
     }
 
     /**
@@ -58,8 +69,9 @@ trait RedirectOperationTrait
         $context = $this->getContextForProperties($rows[0]);
         $workspace = $context->getWorkspace();
         $redirectNode = $context->getNode($path);
-        $redirectService = new NodeRedirectService();
-
+        $redirectService = $this->objectManager->get(NodeRedirectService::class);
+//        \TYPO3\Flow\var_dump($workspace);
+//        die();
         $redirectService->createRedirectsForPublishedNode($redirectNode, $workspace);
     }
 
@@ -69,10 +81,8 @@ trait RedirectOperationTrait
      */
     public function aRedirectShouldBeCreatedWithSourceuriAndTargeturi($sourceUri, $targetUri)
     {
-       $nodeRedirectStorage= new RedirectStorage();
-//        foreach ($nodeRedirectStorage->getAll() as $redirect) {
-//            var_dump ($redirect);
-//        }
+        $nodeRedirectStorage = $this->objectManager->get(RedirectStorage::class);
+
         $targetUri = $this->buildActualUriPath($targetUri);
         $sourceUri = $this->buildActualUriPath($sourceUri);
 
@@ -83,6 +93,7 @@ trait RedirectOperationTrait
         } else {
             Assert::assertEquals($targetUri, null);
         }
+
     }
 
     /**
@@ -94,5 +105,14 @@ trait RedirectOperationTrait
     protected function buildActualUriPath($uri) {
         $httpRequest = Request::createFromEnvironment();
         return $httpRequest->getBaseUri()->getPath().'index.php/'.$uri;
+    }
+
+    /**
+     * Makes sure to reset all redirect instances which might still be stored in the RedirectRepository
+     * @return void
+     */
+    public function resetRedirectInstances()
+    {
+        $this->objectManager->get(RedirectRepository::class)->removeAll();
     }
 }
