@@ -19,6 +19,7 @@ namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
  * [x] Find out why i can't change a property without a `The target URI path of the node could not be resolved` exception
  * [x] Find out why a redirect in the german content dimension hast /en/ as source
  * [x] Find out why hidden nodes are not retrieved
+ * [ ] Make sure to note that this tests rely on changes done in Packages/Application/Neos.RedirectHandler.NeosAdapter/Classes/Service/NodeRedirectService.php
  * [ ] Write more tests
  *
  */

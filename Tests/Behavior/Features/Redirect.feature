@@ -58,15 +58,12 @@ Feature: Add redirect when a node is moved
       | live       |
     And I should have a redirect with sourceUri "en/about.html" and TargetUri "en/about-me.html"
 
+
   @fixtures
-  Scenario:  I have an existing redirect for a node and I change the dimension the redirect should not be overwritten
-#    When I have the following redirects:
-#      | sourceuripath                           | targeturipath      |
-#      | imprint-from-the-old-site               | de/impressum.html  |
+  Scenario:  A redirect should aways be created in the same dimension the node is in (also when a fallback dimension is set)
     When I get a node by path "/sites/typo3cr/imprint" with the following context:
       | Workspace  | Language |
       | user-admin | de       |
-    And I make the node visible
     And I set the node property "uriPathSegment" to "impressum-neu"
     And I publish the workspace "user-admin"
     Then A redirect should be created for the node with path "/sites/typo3cr/imprint" and with the following context:
@@ -74,16 +71,18 @@ Feature: Add redirect when a node is moved
       | live       | de       |
     And I should have a redirect with sourceUri "de/impressum.html" and TargetUri "de/impressum-neu.html"
 
+  # this is already failing because of the bug
+  # check how the node tree looks like at this moment so the test above does not influence this test
   @fixtures
-  Scenario:  A redirect should aways be created in the same dimension the node is in
+  Scenario:  A redirect should aways be created in the same dimension the node is in and not the fallback dimension
     When I get a node by path "/sites/typo3cr/imprint" with the following context:
       | Workspace  | Language |
-      | user-admin | de       |
+      | user-admin | de,en    |
     And I set the node property "uriPathSegment" to "impressum-neu"
     And I publish the workspace "user-admin"
     Then A redirect should be created for the node with path "/sites/typo3cr/imprint" and with the following context:
       | Workspace  | Language |
-      | live       | de       |
+      | live       | de,en    |
     And I should have a redirect with sourceUri "de/impressum.html" and TargetUri "de/impressum-neu.html"
 
   @fixtures
@@ -93,11 +92,19 @@ Feature: Add redirect when a node is moved
       | page-from-the-old-site                  | en/buy.html        |
     When I get a node by path "/sites/typo3cr/buy" with the following context:
       | Workspace  | Language |
-      | user-admin | de       |
+      | user-admin | de    |
     And I make the node visible
-    And I set the node property "uriPathSegment" to "jetzt-kaufen"
+    #And I set the node property "uriPathSegment" to "jetzt-kaufen"
     And I publish the workspace "user-admin"
     Then A redirect should be created for the node with path "/sites/typo3cr/buy" and with the following context:
       | Workspace  | Language |
-      | live       | de       |
+      | live       | de    |
     And I should have a redirect with sourceUri "page-from-the-old-site" and TargetUri "en/buy.html"
+
+#  @fixtures
+#  Scenario:  I have an existing redirect and it should never be overwritten by a node variant from a different fallback dimension
+
+#  @fixtures
+#  Scenario:  When i change the visibility for a node in a fallback dimension no redirects for the node or it's children should be created
+
+
