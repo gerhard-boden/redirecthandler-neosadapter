@@ -97,7 +97,7 @@ class NodeRedirectService implements NodeRedirectServiceInterface
 
         $context = $this->contextFactory->create([
             'workspaceName' => 'live',
-            'invisibleContentShown' => true,
+            'invisibleContentShown' => false,
             'dimensions' => $node->getContext()->getDimensions()
         ]);
 
