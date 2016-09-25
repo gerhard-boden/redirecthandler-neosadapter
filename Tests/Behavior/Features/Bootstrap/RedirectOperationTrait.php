@@ -93,7 +93,6 @@ trait RedirectOperationTrait
         } else {
             Assert::assertEquals($targetUri, null);
         }
-
     }
 
     /**
