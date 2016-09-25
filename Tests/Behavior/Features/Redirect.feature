@@ -1,5 +1,4 @@
-Feature: Add redirect when a node is moved
-
+Feature: Redirects are created automatically when the URI of an preexisting node changes
   Background:
     Given  I have the following content dimensions:
       | Identifier | Default | Presets                |
@@ -17,11 +16,8 @@ Feature: Add redirect when a node is moved
       | 511e9e4b-2193-4100-9a91-6fde2586ae95 | /sites/typo3cr/imprint | TYPO3.Neos:Document        | {"uriPathSegment": "empreinte"}           | live      |        | fr            |
       | 4bba27c8-5029-4ae6-8371-0f2b3e1700a9 | /sites/typo3cr/buy     | TYPO3.Neos:Document        | {"uriPathSegment": "buy"}                 | live      |        | en            |
       | 4bba27c8-5029-4ae6-8371-0f2b3e1700a9 | /sites/typo3cr/buy     | TYPO3.Neos:Document        | {"uriPathSegment": "kaufen"}              | live      | true   | de            |
-
-    And I have the following redirects:
-      | sourceuripath                           | targeturipath      |
-      | en/about.html                           | en/about-you.html  |
-
+      | 81dc6c8c-f478-434c-9ac9-bd5d1781cd95 | /sites/typo3cr/mail    | TYPO3.Neos:Document        | {"uriPathSegment": "mail"}                | live      |        | en            |
+      | 81dc6c8c-f478-434c-9ac9-bd5d1781cd95 | /sites/typo3cr/mail    | TYPO3.Neos:Document        | {"uriPathSegment": "mail"}                | live      | true   | de            |
 
   @fixtures
   Scenario: Move a node into different node and a redirect will be created
@@ -40,17 +36,20 @@ Feature: Add redirect when a node is moved
     And I set the node property "uriPathSegment" to "evil-corp"
     And I publish the node
     And I should have a redirect with sourceUri "en/company.html" and TargetUri "en/evil-corp.html"
-#
-#  # fixed in 1.0.2
-#  @fixtures
-#  Scenario: Delete an existing redirect when the target URI matches the source URI of the new redirect
-#    When I get a node by path "/sites/typo3cr/about" with the following context:
-#      | Workspace  |
-#      | user-admin |
-#    And I set the node property "uriPathSegment" to "about-me"
-#    And I publish the node
-#    And I should have a redirect with sourceUri "en/about.html" and TargetUri "en/about-me.html"
-#
+
+  #fixed in 1.0.2
+  @fixtures
+  Scenario: Delete an existing redirect when the target URI matches the source URI of the new redirect
+    When I get a node by path "/sites/typo3cr/about" with the following context:
+      | Workspace  |
+      | user-admin |
+    And I have the following redirects:
+      | sourceuripath                           | targeturipath      |
+      | en/about.html                           | en/about-you.html  |
+    And I set the node property "uriPathSegment" to "about-me"
+    And I publish the node
+    And I should have a redirect with sourceUri "en/about.html" and TargetUri "en/about-me.html"
+
   @fixtures
   Scenario:  A redirect should aways be created in the same dimension the node is in
     When I get a node by path "/sites/typo3cr/imprint" with the following context:
@@ -60,45 +59,34 @@ Feature: Add redirect when a node is moved
     And I publish the node
     And I should have a redirect with sourceUri "fr/empreinte.html" and TargetUri "fr/empreinte-nouveau.html"
 
+  #fixed in 1.0.3
   @fixtures
   Scenario:  A redirect should aways be created in the same dimension the node is in and not the fallback dimension
     When I get a node by path "/sites/typo3cr/imprint" with the following context:
       | Workspace  | Language |
-      | user-admin | de, en   |
+      | user-admin | de,en   |
     And I set the node property "uriPathSegment" to "impressum-neu"
     And I publish the node
     And I should have a redirect with sourceUri "de/impressum.html" and TargetUri "de/impressum-neu.html"
+    And I should have no redirect with sourceUri "en/impressum.html" and TargetUri "de/impressum-neu.html"
 
+  #fixed in 1.0.3
   @fixtures
-  Scenario:  I have an existing redirect and it should never be overwritten by a node variant from a different dimension
+  Scenario:  I have an existing redirect and it should never be overwritten for a node variant from a different dimension
     When I have the following redirects:
       | sourceuripath                           | targeturipath      |
-      | page-from-the-old-site                  | en/buy.html        |
-    When I get a node by path "/sites/typo3cr/buy" with the following context:
-      | Workspace  | Language |
-      | user-admin | de    |
-    And I make the node visible
-    And I set the node property "uriPathSegment" to "jetzt-kaufen"
-    And I publish the node
-    And I should have a redirect with sourceUri "page-from-the-old-site" and TargetUri "en/buy.html"
-
-  @fixtures
-  Scenario:  I have an existing redirect and it should never be overwritten by a node variant from a different dimension
-    When I have the following redirects:
-      | sourceuripath                           | targeturipath      |
-      | page-from-the-old-site                  | en/buy.html        |
-    When I get a node by path "/sites/typo3cr/buy" with the following context:
+      | important-page-from-the-old-site        | en/mail.html       |
+    When I get a node by path "/sites/typo3cr/mail" with the following context:
       | Workspace  | Language |
       | user-admin | de,en    |
     And I make the node visible
-    And I set the node property "uriPathSegment" to "jetzt-kaufen"
     And I publish the node
-    And I should have a redirect with sourceUri "page-from-the-old-site" and TargetUri "en/buy.html"
+    And I should have a redirect with sourceUri "important-page-from-the-old-site" and TargetUri "en/mail.html"
+    And I should have no redirect with sourceUri "en/mail.html" and TargetUri "de/mail.html"
+
+    # create a bunch of scenarios where no redirect should be created, like example changing any other property
+#  @fixtures
+#  Scenario:  No redirect should be created for a hidden node
 
 #  @fixtures
 #  Scenario:  I have an existing redirect and it should never be overwritten by a node variant from a different fallback dimension
-
-#  @fixtures
-#  Scenario:  When i change the visibility for a node in a fallback dimension no redirects for the node or it's children should be created
-
-
