@@ -79,7 +79,7 @@ trait RedirectOperationTrait
     }
 
     /**
-     *  @Given /^I should have a redirect with sourceUri "([^"]*)" and TargetUri "([^"]*)"$/
+     *  @Given /^I should have a redirect with sourceUri "([^"]*)" and targetUri "([^"]*)"$/
      */
     public function iShouldHaveARedirectWithSourceUriAndTargetUri($sourceUri, $targetUri)
     {
@@ -99,7 +99,7 @@ trait RedirectOperationTrait
     }
 
     /**
-     *  @Given /^I should have no redirect with sourceUri "([^"]*)" and TargetUri "([^"]*)"$/
+     *  @Given /^I should have no redirect with sourceUri "([^"]*)" and targetUri "([^"]*)"$/
      */
     public function iShouldHaveNoRedirectWithSourceUriAndTargetUri($sourceUri, $targetUri)
     {
