@@ -11,6 +11,13 @@ namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
  * source code.
  */
 
+
+use PHPUnit_Framework_Assert as Assert;
+use TYPO3\Flow\Http\Request;
+use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
+use Neos\RedirectHandler\NeosAdapter\Service\NodeRedirectService;
+use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
+
 /**
  * ToDo:
  *
@@ -19,16 +26,12 @@ namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
  * [x] Find out why i can't change a property without a `The target URI path of the node could not be resolved` exception
  * [x] Find out why a redirect in the german content dimension hast /en/ as source
  * [x] Find out why hidden nodes are not retrieved
- * [ ] Make sure to note that this tests rely on changes done in Packages/Application/Neos.RedirectHandler.NeosAdapter/Classes/Service/NodeRedirectService.php
+ * [x] Fix content dimension fallback bug
+ * [ ] Write test scenarios that cover this bug
  * [ ] Write more tests
+ * [ ] Make sure to note that this tests rely on changes done in Packages/Application/Neos.RedirectHandler.NeosAdapter/Classes/Service/NodeRedirectService.php
  *
  */
-
-use PHPUnit_Framework_Assert as Assert;
-use TYPO3\Flow\Http\Request;
-use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
-use Neos\RedirectHandler\NeosAdapter\Service\NodeRedirectService;
-use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
 
 trait RedirectOperationTrait
 {
@@ -77,9 +80,8 @@ trait RedirectOperationTrait
 
     /**
      *  @Given /^I should have a redirect with sourceUri "([^"]*)" and TargetUri "([^"]*)"$/
-     *
      */
-    public function aRedirectShouldBeCreatedWithSourceuriAndTargeturi($sourceUri, $targetUri)
+    public function iShouldHaveARedirectWithSourceUriAndTargetUri($sourceUri, $targetUri)
     {
         $nodeRedirectStorage = $this->objectManager->get(RedirectStorage::class);
 
@@ -89,10 +91,33 @@ trait RedirectOperationTrait
         $redirect = $nodeRedirectStorage->getOneBySourceUriPathAndHost($sourceUri);
 
         if ($redirect !== null) {
-            Assert::assertEquals($targetUri, $redirect->getTargetUriPath());
+            Assert::assertEquals($targetUri, $redirect->getTargetUriPath(),
+                'A redirect was created, but the target URI does not match'
+            );
         } else {
-            Assert::assertEquals($targetUri, null);
+            Assert::assertNotNull($redirect, 'No redirect was created for asserted sourceUri');
         }
+    }
+
+    /**
+     *  @Given /^I should have no redirect with sourceUri "([^"]*)" and TargetUri "([^"]*)"$/
+     */
+    public function iShouldHaveNoRedirectWithSourceUriAndTargetUri($sourceUri, $targetUri)
+    {
+        $nodeRedirectStorage = $this->objectManager->get(RedirectStorage::class);
+
+        $targetUri = $this->buildActualUriPath($targetUri);
+        $sourceUri = $this->buildActualUriPath($sourceUri);
+
+        $redirect = $nodeRedirectStorage->getOneBySourceUriPathAndHost($sourceUri);
+
+        if ($redirect !== null) {
+            Assert::assertNotEquals($targetUri, $redirect->getTargetUriPath(),
+                'An untwanted redirect was created for given source and target URI'
+            );
+        }
+
+        Assert::assertNull($redirect);
     }
 
     /**
