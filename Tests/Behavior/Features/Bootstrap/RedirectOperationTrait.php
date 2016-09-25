@@ -84,7 +84,6 @@ trait RedirectOperationTrait
     public function iShouldHaveARedirectWithSourceUriAndTargetUri($sourceUri, $targetUri)
     {
         $nodeRedirectStorage = $this->objectManager->get(RedirectStorage::class);
-
         $targetUri = $this->buildActualUriPath($targetUri);
         $sourceUri = $this->buildActualUriPath($sourceUri);
 
@@ -105,7 +104,6 @@ trait RedirectOperationTrait
     public function iShouldHaveNoRedirectWithSourceUriAndTargetUri($sourceUri, $targetUri)
     {
         $nodeRedirectStorage = $this->objectManager->get(RedirectStorage::class);
-
         $targetUri = $this->buildActualUriPath($targetUri);
         $sourceUri = $this->buildActualUriPath($sourceUri);
 
@@ -116,6 +114,19 @@ trait RedirectOperationTrait
                 'An untwanted redirect was created for given source and target URI'
             );
         }
+
+        Assert::assertNull($redirect);
+    }
+
+    /**
+     *  @Given /^I should have no redirect with sourceUri "([^"]*)"$/
+     */
+    public function iShouldHaveNoRedirectWithSourceUri($sourceUri)
+    {
+        $nodeRedirectStorage = $this->objectManager->get(RedirectStorage::class);
+        $sourceUri = $this->buildActualUriPath($sourceUri);
+
+        $redirect = $nodeRedirectStorage->getOneBySourceUriPathAndHost($sourceUri);
 
         Assert::assertNull($redirect);
     }
