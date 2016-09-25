@@ -14,7 +14,7 @@ Feature: Redirects are created automatically when the URI of an preexisting node
       | 511e9e4b-2193-4100-9a91-6fde2586ae95 | /sites/typo3cr/imprint | TYPO3.Neos:Document        | {"uriPathSegment": "impressum"}           | live      |        | de            |
       | 511e9e4b-2193-4100-9a91-6fde2586ae95 | /sites/typo3cr/imprint | TYPO3.Neos:Document        | {"uriPathSegment": "imprint"}             | live      |        | en            |
       | 511e9e4b-2193-4100-9a91-6fde2586ae95 | /sites/typo3cr/imprint | TYPO3.Neos:Document        | {"uriPathSegment": "empreinte"}           | live      |        | fr            |
-      | 4bba27c8-5029-4ae6-8371-0f2b3e1700a9 | /sites/typo3cr/buy     | TYPO3.Neos:Document        | {"uriPathSegment": "buy"}                 | live      |        | en            |
+      | 4bba27c8-5029-4ae6-8371-0f2b3e1700a9 | /sites/typo3cr/buy     | TYPO3.Neos:Document        | {"uriPathSegment": "buy", "title": "Buy"} | live      |        | en            |
       | 4bba27c8-5029-4ae6-8371-0f2b3e1700a9 | /sites/typo3cr/buy     | TYPO3.Neos:Document        | {"uriPathSegment": "kaufen"}              | live      | true   | de            |
       | 81dc6c8c-f478-434c-9ac9-bd5d1781cd95 | /sites/typo3cr/mail    | TYPO3.Neos:Document        | {"uriPathSegment": "mail"}                | live      |        | en            |
       | 81dc6c8c-f478-434c-9ac9-bd5d1781cd95 | /sites/typo3cr/mail    | TYPO3.Neos:Document        | {"uriPathSegment": "mail"}                | live      | true   | de            |
@@ -84,9 +84,23 @@ Feature: Redirects are created automatically when the URI of an preexisting node
     And I should have a redirect with sourceUri "important-page-from-the-old-site" and TargetUri "en/mail.html"
     And I should have no redirect with sourceUri "en/mail.html" and TargetUri "de/mail.html"
 
-    # create a bunch of scenarios where no redirect should be created, like example changing any other property
-#  @fixtures
-#  Scenario:  No redirect should be created for a hidden node
+  @fixtures
+  Scenario: No redirect should be created for an existing node if any non URI related property changes
+    When I get a node by path "/sites/typo3cr/buy" with the following context:
+      | Workspace  |
+      | user-admin |
+    And I set the node property "title" to "Buy later"
+    And I publish the node
+    And I should have no redirect with sourceUri "en/buy.html"
+
+  @fixtures
+  Scenario:  No redirect should be created for a hidden node
+    When I get a node by path "/sites/typo3cr/buy" with the following context:
+      | Workspace  | Language |
+      | user-admin | de,en    |
+    And I set the node property "uriPathSegment" to "nicht-kaufen"
+    And I publish the node
+    And I should have no redirect with sourceUri "de/kaufen.html" and TargetUri "de/nicht-kaufen.html"
 
 #  @fixtures
-#  Scenario:  I have an existing redirect and it should never be overwritten by a node variant from a different fallback dimension
+#  Scenario:  No redirect should be created when i hide the node
