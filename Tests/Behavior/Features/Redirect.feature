@@ -51,7 +51,7 @@ Feature: Redirects are created automatically when the URI of an preexisting node
     And I should have a redirect with sourceUri "en/about.html" and targetUri "en/about-me.html"
 
   @fixtures
-  Scenario:  A redirect should aways be created in the same dimension the node is in
+  Scenario: Redirects should aways be created in the same dimension the node is in
     When I get a node by path "/sites/typo3cr/imprint" with the following context:
       | Workspace  | Language |
       | user-admin | fr       |
@@ -61,7 +61,7 @@ Feature: Redirects are created automatically when the URI of an preexisting node
 
   #fixed in 1.0.3
   @fixtures
-  Scenario:  A redirect should aways be created in the same dimension the node is in and not the fallback dimension
+  Scenario: Redirects should aways be created in the same dimension the node is in and not the fallback dimension
     When I get a node by path "/sites/typo3cr/imprint" with the following context:
       | Workspace  | Language |
       | user-admin | de,en   |
@@ -72,7 +72,7 @@ Feature: Redirects are created automatically when the URI of an preexisting node
 
   #fixed in 1.0.3
   @fixtures
-  Scenario:  I have an existing redirect and it should never be overwritten for a node variant from a different dimension
+  Scenario: I have an existing redirect and it should never be overwritten for a node variant from a different dimension
     When I have the following redirects:
       | sourceuripath                           | targeturipath      |
       | important-page-from-the-old-site        | en/mail.html       |
@@ -93,13 +93,11 @@ Feature: Redirects are created automatically when the URI of an preexisting node
     And I publish the node
     Then I should have no redirect with sourceUri "en/buy.html"
 
-  # Think about this, why shouldn't we create redirects for hidden nodes?
-#
-#  @fixtures
-#  Scenario:  No redirect should be created for a hidden node
-#    When I get a node by path "/sites/typo3cr/buy" with the following context:
-#      | Workspace  | Language |
-#      | user-admin | de,en    |
-#    And I set the node property "uriPathSegment" to "nicht-kaufen"
-#    And I publish the node
-#    Then I should have no redirect with sourceUri "de/kaufen.html" and targetUri "de/nicht-kaufen.html"
+  @fixtures
+  Scenario: Redirects should be created for a hidden node
+    When I get a node by path "/sites/typo3cr/buy" with the following context:
+      | Workspace  | Language |
+      | user-admin | de,en    |
+    And I set the node property "uriPathSegment" to "nicht-kaufen"
+    And I publish the node
+    Then I should have a redirect with sourceUri "de/kaufen.html" and targetUri "de/nicht-kaufen.html"
