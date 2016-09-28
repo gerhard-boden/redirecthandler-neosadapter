@@ -17,19 +17,6 @@ use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
 use Neos\RedirectHandler\NeosAdapter\Service\NodeRedirectService;
 use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
 
-/**
- * ToDo:.
- *
- * [x] Find a way to solve the issue that sourceURis look like `localPathToBehat/en/actualUri/`
- * [x] Retrieve persisted redirect within the same request (var_dump was empty because it's a Generator)
- * [x] Find out why i can't change a property without a `The target URI path of the node could not be resolved` exception
- * [x] Find out why a redirect in the german content dimension hast /en/ as source
- * [x] Find out why hidden nodes are not retrieved
- * [x] Fix content dimension fallback bug
- * [x] Write test scenarios that cover this bug
- * [x] Write more tests
- * [X] Make sure to note that this tests rely on changes done in Packages/Application/Neos.RedirectHandler.NeosAdapter/Classes/Service/NodeRedirectService.php
- */
 trait RedirectOperationTrait
 {
     /**
