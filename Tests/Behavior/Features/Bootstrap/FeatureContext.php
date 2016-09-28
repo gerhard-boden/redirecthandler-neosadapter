@@ -17,7 +17,6 @@ use Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap\RedirectO
  */
 class FeatureContext extends \Behat\Behat\Context\BehatContext
 {
-
     use NodeOperationsTrait;
     use IsolatedBehatStepsTrait;
     use RedirectOperationTrait;
