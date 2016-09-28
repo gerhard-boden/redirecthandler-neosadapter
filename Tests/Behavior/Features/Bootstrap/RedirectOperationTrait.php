@@ -2,7 +2,7 @@
 namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
 
 /*
- * This file is part of the TYPO3.TYPO3CR package.
+ * This file is part of the Neos.RedirectHandler.NeosAdapter package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,7 +11,6 @@ namespace Neos\RedirectHandler\NeosAdapter\Tests\Behavior\Features\Bootstrap;
  * source code.
  */
 
-
 use PHPUnit_Framework_Assert as Assert;
 use TYPO3\Flow\Http\Request;
 use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
@@ -19,7 +18,7 @@ use Neos\RedirectHandler\NeosAdapter\Service\NodeRedirectService;
 use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
 
 /**
- * ToDo:
+ * ToDo:.
  *
  * [x] Find a way to solve the issue that sourceURis look like `localPathToBehat/en/actualUri/`
  * [x] Retrieve persisted redirect within the same request (var_dump was empty because it's a Generator)
@@ -27,17 +26,14 @@ use Neos\RedirectHandler\DatabaseStorage\RedirectStorage;
  * [x] Find out why a redirect in the german content dimension hast /en/ as source
  * [x] Find out why hidden nodes are not retrieved
  * [x] Fix content dimension fallback bug
- * [ ] Write test scenarios that cover this bug
- * [ ] Write more tests
- * [ ] Make sure to note that this tests rely on changes done in Packages/Application/Neos.RedirectHandler.NeosAdapter/Classes/Service/NodeRedirectService.php
- *
+ * [x] Write test scenarios that cover this bug
+ * [x] Write more tests
+ * [X] Make sure to note that this tests rely on changes done in Packages/Application/Neos.RedirectHandler.NeosAdapter/Classes/Service/NodeRedirectService.php
  */
-
 trait RedirectOperationTrait
 {
     /**
      * @BeforeScenario @fixtures
-     * @return void
      */
     public function beforeRedirectScenarioDispatcher()
     {
@@ -132,19 +128,21 @@ trait RedirectOperationTrait
     }
 
     /**
-     * Return the actual URI path since the request comes from CLI
+     * Return the actual URI path since the request comes from CLI.
      *
      * @param $uri
+     *
      * @return string
      */
-    protected function buildActualUriPath($uri) {
+    protected function buildActualUriPath($uri)
+    {
         $httpRequest = Request::createFromEnvironment();
+
         return $httpRequest->getBaseUri()->getPath().'index.php/'.$uri;
     }
 
     /**
-     * Makes sure to reset all redirect instances which might still be stored in the RedirectRepository
-     * @return void
+     * Makes sure to reset all redirect instances which might still be stored in the RedirectRepository.
      */
     public function resetRedirectInstances()
     {
